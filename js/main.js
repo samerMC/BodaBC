@@ -17,7 +17,7 @@ const GOOGLE_FORM_CONFIG = {
    ======================================== */
 
 // Fecha del evento: 20 de Diciembre de 2026 a las 18:00
-const WEDDING_DATE = new Date('2026-01-26T18:00:00').getTime();
+const WEDDING_DATE = new Date('2026-01-24T18:00:00').getTime();
 
 /* ========================================
    MÚSICA DE FONDO
