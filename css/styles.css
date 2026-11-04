@@ -156,6 +156,20 @@ button {
     overflow: hidden;
 }
 
+body.invitation-closed {
+    overflow: hidden;
+}
+
+.invitation-closed .portada {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+}
+
+.portada.is-dismissed {
+    display: none;
+}
+
 .portada::before {
     content: '';
     position: absolute;
@@ -176,10 +190,12 @@ button {
     width: 90%;
     max-width: 400px;
     aspect-ratio: 1.5;
-    background: var(--white);
+    background: #e9e3d7;
     box-shadow: var(--shadow-lg);
     margin-bottom: var(--spacing-lg);
     animation: fadeInUp 1s ease;
+    perspective: 1000px;
+    isolation: isolate;
 }
 
 .envelope-flap {
@@ -187,10 +203,87 @@ button {
     top: 0;
     left: 0;
     right: 0;
-    height: 50%;
-    background: linear-gradient(to bottom, #f8f6f0 0%, var(--white) 100%);
+    height: 52%;
+    background: linear-gradient(to bottom, #f8f6f0 0%, #e8e1d6 100%);
     clip-path: polygon(0 0, 50% 100%, 100% 0);
-    border-bottom: 2px solid var(--beige-dark);
+    transform-origin: top center;
+    z-index: 4;
+    backface-visibility: hidden;
+}
+
+.envelope-front {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(150deg, #fff 0%, #f4f0e8 100%);
+    clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+    z-index: 3;
+}
+
+.envelope-letter {
+    position: absolute;
+    inset: 9% 8% 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    background: var(--cream);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    color: var(--sage-dark);
+    z-index: 2;
+}
+
+.envelope-letter span {
+    font-family: var(--font-script);
+    font-size: clamp(1.7rem, 5vw, 2.5rem);
+}
+
+.envelope-letter small {
+    font-family: var(--font-sans);
+    letter-spacing: 0.15em;
+    font-size: 0.7rem;
+}
+
+.portada.opening .wax-seal {
+    animation: sealRelease 0.35s ease forwards;
+}
+
+.portada.opening .envelope-flap {
+    animation: openFlap 0.8s ease-in-out 0.25s forwards;
+}
+
+.portada.opening .envelope-letter {
+    animation: liftLetter 0.9s ease-in-out 0.65s forwards;
+}
+
+.portada.opening .envelope-front {
+    animation: fadeEnvelope 0.45s ease 1.25s forwards;
+}
+
+.portada.opening .btn-ver-invitacion {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.portada.opening {
+    animation: fadeEnvelope 0.4s ease 1.65s forwards;
+}
+
+@keyframes sealRelease {
+    to { opacity: 0; transform: translate(-50%, -50%) scale(0.65); }
+}
+
+@keyframes openFlap {
+    to { transform: rotateX(180deg); }
+}
+
+@keyframes liftLetter {
+    to { transform: translateY(-42%); }
+}
+
+@keyframes fadeEnvelope {
+    to { opacity: 0; }
 }
 
 .wax-seal {
@@ -519,31 +612,41 @@ button {
 
 .carousel {
     position: relative;
+    width: 100%;
     max-width: 800px;
     margin: 0 auto;
     padding: 0 3rem;
+    transition: max-width 0.4s ease;
+}
+
+.carousel.portrait {
+    max-width: 490px;
 }
 
 .carousel-container {
     overflow: hidden;
     border-radius: 8px;
     box-shadow: var(--shadow-lg);
+    aspect-ratio: var(--slide-ratio, 1264 / 845);
+    background: var(--beige);
+    transition: aspect-ratio 0.4s ease;
 }
 
 .carousel-track {
     display: flex;
+    height: 100%;
     transition: transform 0.5s ease;
 }
 
 .carousel-slide {
     min-width: 100%;
-    aspect-ratio: 4/3;
+    height: 100%;
 }
 
 .carousel-slide img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .carousel-btn {
@@ -591,6 +694,14 @@ button {
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
+    flex: 0 0 auto;
+}
+
+.indicator:focus-visible,
+.btn-ver-invitacion:focus-visible,
+.carousel-btn:focus-visible {
+    outline: 3px solid var(--sage-dark);
+    outline-offset: 4px;
 }
 
 .indicator.active {
@@ -838,7 +949,7 @@ button {
     font-size: 1.125rem;
     color: var(--text-light);
     text-align: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-xs);
 }
 
 .rsvp-form {
@@ -848,6 +959,15 @@ button {
     padding: var(--spacing-lg);
     border-radius: 12px;
     box-shadow: var(--shadow-md);
+}
+
+.rsvp-response-frame {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 0;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .form-group {
@@ -936,6 +1056,11 @@ button {
     transform: translateY(-2px);
 }
 
+.btn-rsvp:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
 .status-message {
     margin-top: var(--spacing-md);
     padding: var(--spacing-sm);
@@ -949,6 +1074,11 @@ button {
     background: #d4edda;
     color: #155724;
     display: block;
+}
+
+.status-message.pending {
+    background: #fff3cd;
+    color: #856404;
 }
 
 .status-message.error {
@@ -1076,4 +1206,21 @@ button {
     .fecha-texto {
         text-align: center;
     }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .envelope,
+    .btn-ver-invitacion,
+    .portada.opening,
+    .portada.opening .wax-seal,
+    .portada.opening .envelope-flap,
+    .portada.opening .envelope-letter,
+    .portada.opening .envelope-front {
+        animation-duration: 0.01ms;
+        animation-delay: 0ms;
+    }
+    .carousel,
+    .carousel-container,
+    .carousel-track { transition-duration: 0.01ms; }
 }

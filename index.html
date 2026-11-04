@@ -6,12 +6,12 @@
     <meta name="description" content="Te invitamos a celebrar nuestro día especial">
     
     <!-- Open Graph para compartir en redes -->
-    <meta property="og:title" content="Boda de Marielos y Fernando">
+    <meta property="og:title" content="Boda de Bryan y Marielos">
     <meta property="og:description" content="¡Celebra con nosotros nuestro gran día!">
     <meta property="og:image" content="./assets/img/og-image.jpg">
     <meta property="og:type" content="website">
 
-    <title>Boda de Marielos y Fernando</title>
+    <title>Boda de Bryan y Marielos</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,10 +44,15 @@
 
     <!-- SECCIÓN 1: PORTADA -->
     <section id="portada" class="portada">
-        <div class="envelope">
+        <div class="envelope" aria-hidden="true">
+            <div class="envelope-letter">
+                <span>Bryan y Marielos</span>
+                <small>12 · 12 · 2026</small>
+            </div>
             <div class="envelope-flap"></div>
+            <div class="envelope-front"></div>
             <div class="wax-seal">
-                <img src="./assets/img/sello.png" alt="Sello de cera con iniciales" class="seal-img">
+                <img src="./assets/img/sello.png" alt="" class="seal-img">
             </div>
         </div>
         <button id="verInvitacion" class="btn-ver-invitacion">Ver invitación</button>
@@ -59,12 +64,12 @@
             <div class="hero-monogram">
                 <img src="./assets/img/monogram.png" alt="Monograma S&D" class="monogram-img">
             </div>
-            <h1 class="names">Marielos y Fernando</h1>
+            <h1 class="names">Bryan y Marielos</h1>
             <p class="hero-subtitle">Tenemos el agrado de invitarte a este día tan importante en nuestras vidas</p>
             <div class="hero-divider"></div>
         </div>
         <div class="hero-image">
-            <img src="./assets/img/couple-photo.png" alt="Marielos y Fernando" loading="lazy">
+            <img src="./assets/img/couple-photo.jpg" alt="Bryan y Marielos" loading="lazy">
         </div>
     </section>
 
@@ -73,9 +78,9 @@
         <div class="container">
             <h2 class="section-title script">El Gran Día</h2>
             <div class="fecha-box">
-                <div class="fecha-numero">24</div>
+                <div class="fecha-numero">12</div>
                 <div class="fecha-texto">
-                    <div class="mes">ENERO</div>
+                    <div class="mes">DICIEMBRE</div>
                     <div class="anio">2026</div>
                 </div>
             </div>
@@ -137,46 +142,43 @@
     <section id="galeria" class="galeria-seccion">
         <div class="container">
             <h2 class="section-title script">Nuestros Momentos</h2>
-            <div class="carousel">
+            <div class="carousel" id="carousel">
                 <button class="carousel-btn prev" aria-label="Anterior">‹</button>
                 <div class="carousel-container">
                     <div class="carousel-track">
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0021.jpg" alt="Momento 1" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0043.jpeg" alt="Bryan y Marielos, foto 1" width="1264" height="845" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0023.jpg" alt="Momento 2" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0021.jpeg" alt="Bryan y Marielos, foto 2" width="1200" height="1600" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0029.jpg" alt="Momento 3" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0023.jpeg" alt="Bryan y Marielos, foto 3" width="1200" height="1600" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0030.jpg" alt="Momento 4" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0029.jpeg" alt="Bryan y Marielos, foto 4" width="1200" height="1600" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0032.jpg" alt="Momento 4" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0030.jpeg" alt="Bryan y Marielos, foto 5" width="1200" height="1600" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0035.jpg" alt="Momento 4" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0035.jpeg" alt="Bryan y Marielos, foto 6" width="1200" height="1600" loading="lazy">
                         </div>
                         <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0037.jpg" alt="Momento 4" loading="lazy">
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0042.jpg" alt="Momento 4" loading="lazy">
-                        </div>
-                        <div class="carousel-slide">
-                            <img src="./assets/img/IMG-20251215-WA0043.jpg" alt="Momento 4" loading="lazy">
+                            <img src="./assets/img/IMG-20251215-WA0037.jpeg" alt="Bryan y Marielos, foto 7" width="1200" height="1600" loading="lazy">
                         </div>
                     </div>
                 </div>
                 <button class="carousel-btn next" aria-label="Siguiente">›</button>
             </div>
-            <div class="carousel-indicators">
-                <span class="indicator active" data-slide="0"></span>
-                <span class="indicator" data-slide="1"></span>
-                <span class="indicator" data-slide="2"></span>
-                <span class="indicator" data-slide="3"></span>
+            <div class="carousel-indicators" aria-label="Elegir foto">
+                <button type="button" class="indicator active" aria-label="Ver foto 1 de 7" aria-pressed="true"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 2 de 7" aria-pressed="false"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 3 de 7" aria-pressed="false"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 4 de 7" aria-pressed="false"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 5 de 7" aria-pressed="false"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 6 de 7" aria-pressed="false"></button>
+                <button type="button" class="indicator" aria-label="Ver foto 7 de 7" aria-pressed="false"></button>
             </div>
         </div>
     </section>
@@ -284,11 +286,11 @@
                 <img src="./assets/img/sello.png" alt="Sello" class="seal-top-img">
             </div>
             <h2 class="section-title script">Confirma tu asistencia</h2>
-            <p class="rsvp-subtitle">Por favor confirmar tu asistencia antes del 31 de diciembre</p>            
-            <form id="rsvpForm" class="rsvp-form">
+            <p class="rsvp-subtitle">Por favor confirma tu asistencia antes del 30 de noviembre de 2026</p>
+            <form id="rsvpForm" class="rsvp-form" action="https://docs.google.com/forms/d/e/1FAIpQLSfMllgSc8a7HAuQswDuG6PE8frEF1p8rwUL8gJlGQblYJpXhA/formResponse" method="POST" target="rsvpResponseFrame">
                 <div class="form-group">
                     <label for="nombre">Nombre</label>
-                    <input type="text" id="nombre" required placeholder="Tu nombre completo">
+                    <input type="text" id="nombre" name="entry.477189467" required minlength="3" placeholder="Tu nombre completo">
                 </div>
 
                 <div class="rsvp-nota">
@@ -297,17 +299,20 @@
 
                 <div class="form-group">
                     <label for="mensaje">Mensaje para los novios</label>
-                    <textarea id="mensaje" rows="4" maxlength="500" placeholder="Escribe un mensaje para los novios"></textarea>
+                    <textarea id="mensaje" name="entry.1108535015" rows="4" maxlength="500" placeholder="Escribe un mensaje para los novios"></textarea>
                     <div class="char-counter"><span id="charCount">0</span>/500</div>
                 </div>
 
+                <input type="hidden" id="asistencia" name="entry.1179020857" value="">
+
                 <div class="form-buttons">
-                    <button type="submit" class="btn-rsvp btn-asistir">Asistiré</button>
-                    <button type="button" class="btn-rsvp btn-no-asistir" id="noAsistir">No podré asistir</button>
+                    <button type="submit" class="btn-rsvp btn-asistir" data-asistencia="Asistiré">Sí asistiré</button>
+                    <button type="submit" class="btn-rsvp btn-no-asistir" id="noAsistir" data-asistencia="No podré asistir">No asistiré</button>
                 </div>
 
-                <div id="statusMessage" class="status-message"></div>
+                <div id="statusMessage" class="status-message" role="status" aria-live="polite"></div>
             </form>
+            <iframe id="rsvpResponseFrame" name="rsvpResponseFrame" title="Respuesta de Google Forms" class="rsvp-response-frame" aria-hidden="true" tabindex="-1"></iframe>
 
         </div>
     </section>
@@ -317,8 +322,8 @@
         <div class="container">
             <div class="footer-divider"></div>
             <p class="footer-text">Gracias por acompañarnos en este día tan especial</p>
-            <p class="footer-names script">Marielos y Fernando</p>
-            <p class="footer-date">24 • 01 • 2026</p>
+            <p class="footer-names script">Bryan y Marielos</p>
+            <p class="footer-date">12 • 12 • 2026</p>
         </div>
     </footer>
 

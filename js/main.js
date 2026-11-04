@@ -1,23 +1,11 @@
 /* ========================================
-   CONFIGURACIÓN DE GOOGLE FORMS
-   ======================================== */
-
-// IMPORTANTE: Reemplaza estos valores con los entry IDs de tu Google Form
-const GOOGLE_FORM_CONFIG = {
-    formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSfMllgSc8a7HAuQswDuG6PE8frEF1p8rwUL8gJlGQblYJpXhA/formResponse',
-    fields: {
-        nombre: 'entry.477189467',      // Reemplazar con tu entry ID
-        mensaje: 'entry.1108535015',     // Reemplazar con tu entry ID
-        asistencia: 'entry.1179020857'   // Reemplazar con tu entry ID
-    }
-};
-
-/* ========================================
    CONFIGURACIÓN DEL EVENTO
    ======================================== */
 
-// Fecha del evento: 20 de Diciembre de 2026 a las 18:00
-const WEDDING_DATE = new Date('2026-01-24T18:00:00').getTime();
+// Ceremonia civil: 12 de diciembre de 2026, 16:00 en El Salvador (UTC-6).
+const WEDDING_DATE = new Date('2026-12-12T16:00:00-06:00').getTime();
+
+document.body.classList.add('invitation-closed');
 
 /* ========================================
    MÚSICA DE FONDO
@@ -76,11 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
    ======================================== */
 
 document.getElementById('verInvitacion').addEventListener('click', function() {
-    // Hacer scroll suave a la sección hero
-    document.getElementById('hero').scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-    });
+    const portada = document.getElementById('portada');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (portada.classList.contains('opening')) return;
+    portada.classList.add('opening');
+    this.disabled = true;
+
+    window.setTimeout(() => {
+        portada.classList.add('is-dismissed');
+        document.body.classList.remove('invitation-closed');
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    }, reduceMotion ? 0 : 2100);
 });
 
 /* ========================================
@@ -122,6 +117,7 @@ updateCountdown(); // Llamar inmediatamente al cargar
    ======================================== */
 
 (function() {
+    const carousel = document.getElementById('carousel');
     const track = document.querySelector('.carousel-track');
     const slides = Array.from(document.querySelectorAll('.carousel-slide'));
     const prevBtn = document.querySelector('.carousel-btn.prev');
@@ -138,6 +134,9 @@ updateCountdown(); // Llamar inmediatamente al cargar
         if (index >= totalSlides) index = totalSlides - 1;
         
         currentIndex = index;
+        carousel.classList.toggle('portrait', currentIndex > 0);
+        const image = slides[currentIndex].querySelector('img');
+        carousel.style.setProperty('--slide-ratio', `${image.getAttribute('width')} / ${image.getAttribute('height')}`);
         
         // Mover el track
         const movePercentage = currentIndex * -100;
@@ -146,6 +145,7 @@ updateCountdown(); // Llamar inmediatamente al cargar
         // Actualizar indicadores
         indicators.forEach((indicator, i) => {
             indicator.classList.toggle('active', i === currentIndex);
+            indicator.setAttribute('aria-pressed', String(i === currentIndex));
         });
     }
     
@@ -208,11 +208,14 @@ updateCountdown(); // Llamar inmediatamente al cargar
 (function() {
     const form = document.getElementById('rsvpForm');
     const nombreInput = document.getElementById('nombre');
-    const invitadosSelect = document.getElementById('invitados');
     const mensajeTextarea = document.getElementById('mensaje');
     const charCount = document.getElementById('charCount');
     const statusMessage = document.getElementById('statusMessage');
-    const noAsistirBtn = document.getElementById('noAsistir');
+    const asistenciaInput = document.getElementById('asistencia');
+    const responseFrame = document.getElementById('rsvpResponseFrame');
+    const buttons = Array.from(form.querySelectorAll('.btn-rsvp'));
+    let waitingForResponse = false;
+    let responseTimer;
     
     // Contador de caracteres
     mensajeTextarea.addEventListener('input', function() {
@@ -226,92 +229,49 @@ updateCountdown(); // Llamar inmediatamente al cargar
         }
     });
     
-    // Enviar formulario - "Asistiré"
+    // El formulario se envía a Google en un iframe oculto, sin salir de la landing.
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        enviarRSVP('si');
-    });
-    
-    // Botón "No podré asistir"
-    noAsistirBtn.addEventListener('click', function() {
-        if (!nombreInput.value.trim()) {
-            mostrarMensaje('Por favor ingresa tu nombre', 'error');
-            nombreInput.focus();
-            return;
-        }
-        
-        enviarRSVP('no');
-    });
-    
-    // Función para enviar datos a Google Forms
-    function enviarRSVP(asistencia) {
         const nombre = nombreInput.value.trim();
-        const mensaje = mensajeTextarea.value.trim();
-
-        // Validaciones
-        if (!nombre || nombre.length < 3) {
+        if (nombre.length < 3) {
+            e.preventDefault();
             mostrarMensaje('Por favor ingresa tu nombre completo.', 'error');
             nombreInput.focus();
             return;
         }
+        if (waitingForResponse) {
+            e.preventDefault();
+            return;
+        }
 
-        // FormData con entry IDs
-        const formData = new FormData();
-        formData.append(GOOGLE_FORM_CONFIG.fields.nombre, nombre);
-        formData.append(GOOGLE_FORM_CONFIG.fields.mensaje, mensaje);
-        formData.append(
-            GOOGLE_FORM_CONFIG.fields.asistencia,
-            asistencia === 'si' ? 'Asistiré' : 'No podré asistir'
-        );
+        nombreInput.value = nombre;
+        asistenciaInput.value = e.submitter?.dataset.asistencia || 'Asistiré';
+        waitingForResponse = true;
+        buttons.forEach(button => { button.disabled = true; });
+        mostrarMensaje('Enviando tu respuesta...', 'pending');
 
-        // UI: deshabilitar botones mientras envía
-        const buttons = form.querySelectorAll('button');
-        buttons.forEach(btn => (btn.disabled = true));
-        mostrarMensaje('Enviando tu confirmación...', 'success'); // mensaje temporal (estilo success)
+        responseTimer = window.setTimeout(() => {
+            if (!waitingForResponse) return;
+            waitingForResponse = false;
+            buttons.forEach(button => { button.disabled = false; });
+            mostrarMensaje('No pudimos comprobar el envío. Consulta con los novios antes de intentarlo otra vez.', 'error');
+        }, 20000);
+    });
 
-        fetch(GOOGLE_FORM_CONFIG.formUrl, {
-            method: 'POST',
-            body: formData,
-            mode: 'no-cors'
-        })
-            .then(() => {
-            const msg =
-                asistencia === 'si'
-                ? `Gracias ${nombre}. Tu asistencia ha sido confirmada. ¡Nos vemos el gran día!`
-                : `Gracias ${nombre} por informarnos. Agradecemos que nos lo hagas saber.`;
-
-            mostrarMensaje(msg, 'success');
-
-            form.reset();
-            charCount.textContent = '0';
-
-            // Si tienes pendingMessage y quieres ocultarlo:
-            const pending = document.getElementById('pendingMessage');
-            if (pending) pending.style.display = 'none';
-            })
-            .catch(() => {
-            mostrarMensaje(
-                'No pudimos enviar tu confirmación. Por favor intenta nuevamente.',
-                'error'
-            );
-            })
-            .finally(() => {
-            buttons.forEach(btn => (btn.disabled = false));
-            });
-    }
+    responseFrame.addEventListener('load', function() {
+        if (!waitingForResponse) return;
+        waitingForResponse = false;
+        window.clearTimeout(responseTimer);
+        buttons.forEach(button => { button.disabled = false; });
+        form.reset();
+        charCount.textContent = '0';
+        mostrarMensaje('Gracias. Tu respuesta fue enviada.', 'success');
+    });
     
     // Función para mostrar mensajes de estado
     function mostrarMensaje(texto, tipo) {
         statusMessage.textContent = texto;
         statusMessage.className = `status-message ${tipo}`;
         statusMessage.style.display = 'block';
-        
-        // Auto-ocultar después de 5 segundos si es error
-        if (tipo === 'error') {
-            setTimeout(() => {
-                statusMessage.style.display = 'none';
-            }, 5000);
-        }
     }
 })();
 
@@ -369,4 +329,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 console.log('✨ Invitación de boda cargada exitosamente');
-console.log('📅 Fecha del evento:', new Date(WEDDING_DATE).toLocaleString('es-ES'));           
+console.log('📅 Fecha del evento:', new Date(WEDDING_DATE).toLocaleString('es-SV', { timeZone: 'America/El_Salvador' }));
